@@ -43,18 +43,14 @@ module Associatable
     options = BelongsToOptions.new(name, options)
     assoc_options[name] = options
     define_method name do
-      params = {}
-      params[options.primary_key] = send(options.foreign_key)
-      options.model_class.where(params).first
+      options.model_class.where({options.primary_key => send(options.foreign_key)}).first
     end
   end
 
   def has_many(name, options = {})
     options = HasManyOptions.new(name, self.to_s, options)
     define_method name do
-      params = {}
-      params[options.foreign_key] = send(options.primary_key)
-      options.model_class.where(params)
+      options.model_class.where({options.foreign_key => send(options.primary_key)})
     end
   end
 
